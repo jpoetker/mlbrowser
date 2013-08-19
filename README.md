@@ -1,7 +1,7 @@
 mlbrowser
 =========
 
-This is the respository for the mlbrowser that has been developed by [http://www.metrological.com](Metrological). It can be used with the buildroot fork at https://github.com/albertd/buildroot-rpi or its fork https://github.com/msieben/buildroot-rpi.git.
+This is the respository for the mlbrowser that has been developed by [Metrological](http://www.metrological.com). It can be used with the buildroot fork at https://github.com/albertd/buildroot-rpi or its fork https://github.com/msieben/buildroot-rpi.git.
 
 You can add this package to your own fork of buildroot by adding the Config.in and mlbrowser.mk files.
 
