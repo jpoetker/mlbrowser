@@ -12,7 +12,9 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 TARGET = mlbrowser
-HEADERS = mlwebkit.h
+
+HEADERS = \
+	mlwebkit.h
 
 SOURCES = \
 	mlwebkit.cpp \
@@ -41,4 +43,8 @@ contains(DEFINES, _PLAYER_) {
 		CONFIG += link_pkgconfig
 		PKGCONFIG += gstreamer-0.10
 	}
+
+contains(DEFINES, _SSLERROR_) {
+	HEADERS += mlsslerror.h
+	SOURCES += mlsslerror.cpp
 }

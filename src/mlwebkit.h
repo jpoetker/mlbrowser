@@ -16,6 +16,10 @@
 #include <QGraphicsProxyWidget>
 #endif
 
+#ifdef _SSLERROR_
+#include "mlsslerror.h"
+#endif
+
 class MLWebKit
 {
 public:
@@ -52,6 +56,10 @@ private:
 	static MLWebKit*	pWebKit;
 	QWebInspector*		pInspector;
 	QGraphicsProxyWidget*	pProxyWidget;
+#endif
+
+#ifdef _SSLERROR_
+	SSLError*		pSSLerror;
 #endif
 };
 #endif

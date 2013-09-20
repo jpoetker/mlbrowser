@@ -3,15 +3,16 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QApplication>
+#include <QMetaObject>
 
 #include "mlwebkit.h"
 
-
-#include <QMetaObject>
-
-
 #ifdef _PLAYER_
 #include "mlplayer.h"
+#endif
+
+#ifdef _SSLERROR_
+#include "mlsslerror.h"
 #endif
 
 class GraphicsWebView : public QGraphicsWebView
@@ -110,6 +111,11 @@ MLWebKit::MLWebKit()
 		qDebug () << "unable to construct browser (elements)";
 		return;
 	}
+#ifdef _SSLERROR_
+	pSSLerror = new SSLError();
+	if (pSSLerror != NULL)
+		QObject::connect (pPage->networkAccessManager(), &QNetworkAccessManager::sslErrors, pSSLerror, &SSLError::handleSslErrors);
+#endif
 
 #ifdef QT_OPENGL_LIB
 	pWidget = NULL;
