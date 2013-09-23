@@ -43,6 +43,7 @@ contains(DEFINES, _PLAYER_) {
 		CONFIG += link_pkgconfig
 		PKGCONFIG += gstreamer-0.10
 	}
+}
 
 contains(DEFINES, _SSLERROR_) {
 	HEADERS += mlsslerror.h
