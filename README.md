@@ -10,7 +10,7 @@ You can add this package to your own fork of buildroot by adding the Config.in a
 	config BR2_PACKAGE_MLBROWSER
 	bool "mlbrowser"
 	help
-	  Metrological's simple (accellerated) browser implementation
+	  Metrological's simple (accelerated) browser implementation
 	  http://www.metrological.com
 
 *mlbrowser.mk*
