@@ -60,7 +60,7 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 					qDebug () << "send event : " << QCoreApplication::sendEvent ( reinterpret_cast<QObject*> (QApplication::focusWidget()), &keyevent ); 
 					return true;
 				}
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 				case Qt::Key_Period : // '.' (period), 0x2e
 				{
 //TODO: move to the browser context menu event 
@@ -82,6 +82,24 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 				}
 
 #endif
+				case Qt::Key_F1 : //
+				{
+					MLWebKit* pWebKit = MLWebKit::instance();
+					// Call the garbage collector
+					if (pWebKit != NULL )
+						pWebKit->collect_garbage();
+					return true;
+				}
+
+				case Qt::Key_F2 : //
+				{
+					MLWebKit* pWebKit = MLWebKit::instance();
+					// Clear memory caches
+					if (pWebKit != NULL )
+						pWebKit->clear_caches();
+					return true;
+				}
+
 				default:;
 			}
 		}

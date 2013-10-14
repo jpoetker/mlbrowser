@@ -73,7 +73,7 @@ protected:
 */
 };
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 MLWebKit* MLWebKit::pWebKit = NULL;
 
 MLWebKit* MLWebKit::instance()
@@ -84,7 +84,7 @@ MLWebKit* MLWebKit::instance()
 
 MLWebKit::MLWebKit() 
 {
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	pWebKit = this;
 #endif
 
@@ -123,7 +123,7 @@ MLWebKit::MLWebKit()
 //	pWidget = new QGLWidget(pView);
 #endif
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	pInspector = new QWebInspector;
 	pInspector->setPage(pPage);
 	pInspector->resize(QApplication::desktop()->screenGeometry().size());
@@ -172,18 +172,22 @@ MLWebKit::MLWebKit()
 	// Some extra settings
 	QWebSettings* pSettings = pWebview->settings();
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 #endif
 
 	pSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
 	pSettings->setAttribute(QWebSettings::WebGLEnabled, false);
 	pSettings->setAttribute(QWebSettings::PluginsEnabled, false);
+
+/*Test for offline  HTML5 AppCache*/
+/*What are the default values?*/
 	pSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+	pSettings->setAttribute(QWebSettings::LocalStorageEnabled, true);
+
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
 //	pSettings->setAttribute(QWebSettings::FrameFlatteningEnabled, true);
-	pSettings->setAttribute(QWebSettings::LocalStorageEnabled, true);
 	pSettings->setAttribute(QWebSettings::WebSecurityEnabled, false);
 	pSettings->setAttribute(QWebSettings::SpatialNavigationEnabled, false);
 
@@ -202,13 +206,13 @@ MLWebKit::MLWebKit()
 
 	pScene->addItem(pWebview);
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	pProxyWidget = pScene->addWidget(pInspector);
 #endif
 
 	// Set visibility
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 //	pInspector->hide();
 	pProxyWidget->hide();
 #endif
@@ -262,7 +266,6 @@ void MLWebKit::hide()
 		pView->hide();
 }
 
-
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_)
 void MLWebKit::attach_object(QObject* _pObject_, QString _name_)
 {
@@ -284,7 +287,17 @@ void MLWebKit::attach_object(QObject* _pObject_, QString _name_)
 }
 #endif
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
+void MLWebKit::collect_garbage()
+{
+	QWebSettings::garbagecollectnow();
+}
+
+void MLWebKit::clear_caches()
+{
+	QWebSettings::clearMemoryCaches();
+}
+
 void MLWebKit::inspector()
 {
 	qDebug () << "toggle web inspector";

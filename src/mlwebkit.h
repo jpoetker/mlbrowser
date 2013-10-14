@@ -11,7 +11,7 @@
 #include <QGLWidget>
 #endif
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 #include <QWebInspector>
 #include <QGraphicsProxyWidget>
 #endif
@@ -34,9 +34,12 @@ public:
 	void attach_object(QObject* pObject, QString _name_);
 #endif
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	static MLWebKit* instance();
 	void inspector();
+
+	void collect_garbage();
+	void clear_caches();
 #endif
 
 private:
@@ -52,7 +55,7 @@ private:
 	QGLWidget*		pWidget; // viewport
 #endif
 
-#ifdef _INSPECTOR_
+#ifdef _DEBUG_TOOLS_
 	static MLWebKit*	pWebKit;
 	QWebInspector*		pInspector;
 	QGraphicsProxyWidget*	pProxyWidget;
