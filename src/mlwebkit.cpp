@@ -180,8 +180,6 @@ MLWebKit::MLWebKit()
 	pSettings->setAttribute(QWebSettings::WebGLEnabled, false);
 	pSettings->setAttribute(QWebSettings::PluginsEnabled, false);
 
-/*Test for offline  HTML5 AppCache*/
-/*What are the default values?*/
 	pSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 	pSettings->setAttribute(QWebSettings::LocalStorageEnabled, true);
 
