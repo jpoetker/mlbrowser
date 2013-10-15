@@ -137,6 +137,9 @@ int main(int argc, char * argv[])
 	browser->attach_object(&propertychanger, "propertychanger");
 #endif
 
+browser->instance()
+browser->instance()->collect_garbage();
+
 	qDebug () << "load and show page";
 
         browser->load(url);

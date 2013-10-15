@@ -170,7 +170,7 @@ MLWebKit::MLWebKit()
 	pWebview->setFocus();
 
 	// Some extra settings
-	QWebSettings* pSettings = pWebview->settings();
+	pSettings = pWebview->settings();
 
 #ifdef _DEBUG_TOOLS_
 	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);

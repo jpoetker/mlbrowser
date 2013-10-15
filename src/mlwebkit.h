@@ -14,6 +14,7 @@
 #ifdef _DEBUG_TOOLS_
 #include <QWebInspector>
 #include <QGraphicsProxyWidget>
+#include <QWebSettings>
 #endif
 
 #ifdef _SSLERROR_
@@ -59,6 +60,7 @@ private:
 	static MLWebKit*	pWebKit;
 	QWebInspector*		pInspector;
 	QGraphicsProxyWidget*	pProxyWidget;
+	QWebSettings*		pSettings;
 #endif
 
 #ifdef _SSLERROR_
