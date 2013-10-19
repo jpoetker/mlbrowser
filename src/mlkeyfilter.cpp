@@ -65,11 +65,9 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 				{
 //TODO: move to the browser context menu event 
 
-					// show / hide webinspector
-					MLWebKit* pWebKit = MLWebKit::instance();
-
-					if (pWebKit != NULL )
-						pWebKit->inspector();
+					// toggle webinspector access
+					MLWebKit& webkit = MLWebKit::instance();
+					webkit.toggle_inspector();
 
 					return true;
 				}
@@ -81,24 +79,22 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 					return true;
 				}
 
-#endif
 				case Qt::Key_F1 : //
 				{
-					MLWebKit* pWebKit = MLWebKit::instance();
 					// Call the garbage collector
-					if (pWebKit != NULL )
-						pWebKit->collect_garbage();
+					MLWebKit& webkit = MLWebKit::instance();
+					webkit.collect_garbage();
 					return true;
 				}
 
 				case Qt::Key_F2 : //
 				{
-					MLWebKit* pWebKit = MLWebKit::instance();
 					// Clear memory caches
-					if (pWebKit != NULL )
-						pWebKit->clear_caches();
+					MLWebKit& webkit = MLWebKit::instance();
+					webkit.clear_caches();
 					return true;
 				}
+#endif
 
 				default:;
 			}

@@ -125,30 +125,28 @@ int main(int argc, char * argv[])
 	QApplication::setOverrideCursor ( QCursor ( Qt::BlankCursor ) );
 #endif
 
-        MLWebKit* browser = new MLWebKit();
+        MLWebKit& browser=MLWebKit::instance();
 
 #ifdef _PLAYER_
         qDebug () << "add player";
-	browser->attach_object(&player, "player");
+	browser.attach_object(&player, "player");
 #endif
 
 #ifdef _PROPERTYCHANGER_
 	qDebug () << "add propertychanger"; 
-	browser->attach_object(&propertychanger, "propertychanger");
+	browser.attach_object(&propertychanger, "propertychanger");
 #endif
 
-browser->instance()
-browser->instance()->collect_garbage();
+#ifdef _DEBUG_TOOLS_
+	qDebug () << "add browser"; 
+	browser.attach_object(&browser, "browser");
+#endif
 
 	qDebug () << "load and show page";
 
-        browser->load(url);
-        browser->show();
+        browser.load(url);
+        browser.show();
 #endif
 
 	return app.exec();
-
-#ifdef _BROWSER_
-	delete browser;
-#endif
 }

@@ -15,6 +15,15 @@
 #include "mlsslerror.h"
 #endif
 
+//TODO : move to command line argument 
+#ifdef _DEBUG_TOOLS_
+#define INSPECTOR_PORT 9999
+#endif
+
+#if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
+#include <QWebFrame>
+#endif
+
 class GraphicsWebView : public QGraphicsWebView
 {
 public:
@@ -73,77 +82,48 @@ protected:
 */
 };
 
-#ifdef _DEBUG_TOOLS_
-MLWebKit* MLWebKit::pWebKit = NULL;
-
-MLWebKit* MLWebKit::instance()
+MLWebKit& MLWebKit::instance()
 {
-	return pWebKit;
+	static MLWebKit mlwebkit;
+	return mlwebkit;
 } 
-#endif
 
 MLWebKit::MLWebKit() 
 {
-#ifdef _DEBUG_TOOLS_
-	pWebKit = this;
-#endif
+	view.setScene(&scene);
 
-	// Create elements
-
-	pScene = new QGraphicsScene();
-
-	if ( pScene == NULL ) return;
-
-	pView = new QGraphicsView(pScene);
-
-	pWebview = new GraphicsWebView();
-
-	pPage =  new WebPage();
-
-	pFrame = pPage->mainFrame();
-
+//TODO : use proper cast
 	QApplication* pApp = (QApplication *)QApplication::instance();
+	Q_ASSERT(pApp != NULL);
 
 	QDesktopWidget* pDesktop = QApplication::desktop();
+	Q_ASSERT(pDesktop != NULL);
 
-	if ( pScene == NULL || pView == NULL || pWebview == NULL || pPage == NULL || pFrame == NULL || pApp == NULL || pDesktop == NULL )
-	{
-		qDebug () << "unable to construct browser (elements)";
-		return;
-	}
 #ifdef _SSLERROR_
-	pSSLerror = new SSLError();
-	if (pSSLerror != NULL)
-		QObject::connect (pPage->networkAccessManager(), &QNetworkAccessManager::sslErrors, pSSLerror, &SSLError::handleSslErrors);
+	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
 #endif
 
 #ifdef QT_OPENGL_LIB
 	pWidget = NULL;
 //	pWidget = new QGLWidget();
-//	pWidget = new QGLWidget(pView);
-#endif
-
-#ifdef _DEBUG_TOOLS_
-	pInspector = new QWebInspector;
-	pInspector->setPage(pPage);
-	pInspector->resize(QApplication::desktop()->screenGeometry().size());
+//	pWidget = new QGLWidget(view);
 #endif
 
 	// Configuration, settings and alike
-//	pScene->setItemIndexMethod( QGraphicsScene::NoIndex);
-//	pView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-	pView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-//	pView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-//	pView->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+//	scene.setItemIndexMethod( QGraphicsScene::NoIndex);
+//	view.setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+	view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+//	view.setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+//	view.setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
 	// Disable some 'browser features / elements'
-	pView->setFrameShape(QFrame::NoFrame);
-	pView->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-	pView->setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+	view.setFrameShape(QFrame::NoFrame);
+	view.setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+	view.setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
 
-//	pView->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-	pView->setWindowFlags(Qt::FramelessWindowHint);
-	pView->showFullScreen();
+//	view.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+	view.setWindowFlags(Qt::FramelessWindowHint);
+	view.showFullScreen();
 
 	// Overrule the 'foreground' and 'background' defaults with transparent colors
 	QPalette palette;
@@ -162,16 +142,19 @@ MLWebKit::MLWebKit()
 
 	// Proper (re)sizing, full screen
 
-//TODO: implement check
-	pWebview->resize(QApplication::desktop()->screenGeometry().size());
-	pWebview->setPage(pPage);
+//TODO : implement check
+	webview.resize(QApplication::desktop()->screenGeometry().size());
+	webview.setPage(&page);
 
 	// Set the keyboard and mouse focus
-	pWebview->setFocus();
+	webview.setFocus();
 
 	// Some extra settings
-	pSettings = pWebview->settings();
+	pSettings = webview.settings();
 
+	Q_ASSERT(pSettings != NULL);
+
+//TODO : enable via comamnd line arguments
 #ifdef _DEBUG_TOOLS_
 	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 #endif
@@ -198,90 +181,71 @@ MLWebKit::MLWebKit()
 
 	// Finalize
 #ifdef QT_OPENGL_LIB
-//	pView->setViewport(pWidget);
-	pView->setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
+//	view.setViewport(pWidget);
+
+//TODO : check buffer settings (platform)
+//TODO : check 'old' solution
+//TODO : command line arguments
+	view.setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
 #endif
 
-	pScene->addItem(pWebview);
+	scene.addItem(&webview);
 
 #ifdef _DEBUG_TOOLS_
-	pProxyWidget = pScene->addWidget(pInspector);
+//TODO : print return value
+	page.setProperty("_q_webInspectorServerPort", INSPECTOR_PORT);
 #endif
 
 	// Set visibility
-
-#ifdef _DEBUG_TOOLS_
-//	pInspector->hide();
-	pProxyWidget->hide();
-#endif
-
-	pWebview->show();
+	webview.show();
 }
 
 MLWebKit::~MLWebKit()
 {
-	qDebug () << "clean up browser (elements)";
-
-/*
-	if (pInspector != NULL)
-		delete pInspector;
-*/
-
-	if (pWebview != NULL)
-		delete pWebview;
-
-	if (pView != NULL)
-		delete pView;
-
-	if (pScene != NULL)
-		delete pScene;
-
-	if (pObject != NULL)
-		delete pObject;
 }
 
 void MLWebKit::load(QUrl url)
 {
 	qDebug () << "load ( url ) : " << url;
-
-	if (pWebview != NULL)
-		pWebview->load(url);
+	webview.load(url);
 }
 
 void MLWebKit::show()
 {
 	qDebug () << "show ()";
-
-	if (pView != NULL)
-		pView->show();
+	view.show();
 }
 
 void MLWebKit::hide()
 {
 	qDebug () << "hide ()";
-
-	if (pView != NULL)
-		pView->hide();
+	view.hide();
 }
 
-#if defined (_PLAYER_) || defined (_PROPERTYCHANGER_)
-void MLWebKit::attach_object(QObject* _pObject_, QString _name_)
+#if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
+void MLWebKit::attach_object(QObject* pObject, const QString name)
 {
-	qDebug () << "attach_player()";
+	qDebug () << "attach object to bridge";
 
-	if ( pFrame != NULL)
-	{	
-		pObject = _pObject_;
+	if(pObject == NULL)
+	{
+		qWarning () << "invalid object provided for webkit bridge";	
+		return;
+	}
 
+	QWebFrame*  pFrame = page.mainFrame();
+
+	if (pFrame != NULL )
+	{
 		qDebug () << "change (NULL) parent to pFrame";
 		pObject->setParent(pFrame);
 
 		qDebug () << "add webkit bridge for object " << pObject;
 //TODO: connect to slot to keep the object accessible when page has changed
-		pFrame->addToJavaScriptWindowObject(_name_, pObject);
-
-
+		pFrame->addToJavaScriptWindowObject(name, pObject);
 	}
+	else
+		qWarning () << "unable to add webkit bridge for object " << pObject;	
 }
 #endif
 
@@ -289,6 +253,7 @@ void MLWebKit::attach_object(QObject* _pObject_, QString _name_)
 void MLWebKit::collect_garbage()
 {
 	QWebSettings::garbagecollectnow();
+// TODO: check if gc is available
 }
 
 void MLWebKit::clear_caches()
@@ -296,33 +261,16 @@ void MLWebKit::clear_caches()
 	QWebSettings::clearMemoryCaches();
 }
 
-void MLWebKit::inspector()
+void MLWebKit::toggle_inspector()
 {
 	qDebug () << "toggle web inspector";
 
-	if(pInspector != NULL && pWebview != NULL)
-	{
- 
- 		if ( pInspector->isVisible() == false )
- 		{
-			qDebug () << "show webinspector";
+//TODO : print return value
 
-			pWebview->hide();
-			pWebview->setEnabled(false);
-			pProxyWidget->show();
-			pProxyWidget->setEnabled(true);
- 		}
- 		else
- 		{
-			qDebug () << "hide webinspector";
-
- 			pProxyWidget->hide();
-			pProxyWidget->setEnabled(false);
-			pWebview->show();
-			pWebview->setEnabled(true);
- 		}
- 	}
+	if (page.property("_q_webInspectorServerPort") == INSPECTOR_PORT)
+		page.setProperty("_q_webInspectorServerPort", -1);
 	else
-		qDebug () << "some elements do not exist";
+		page.setProperty("_q_webInspectorServerPort", INSPECTOR_PORT);
+
 }
 #endif
