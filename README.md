@@ -5,6 +5,8 @@ This is the respository for the mlbrowser that has been developed by [Metrologic
 
 You can add this package to your own fork of buildroot by adding the Config.in and mlbrowser.mk files.
 
+The mlbrowser is a Qt port WebKit 1 based browser with support for the remote WebInspector.
+
 *Config.in*
 
 	config BR2_PACKAGE_MLBROWSER
@@ -21,7 +23,7 @@ You can add this package to your own fork of buildroot by adding the Config.in a
 	#
 	#############################################################
 
-	MLBROWSER_VERSION = 0d8d1312c4fbedd087a4f1da1a3cb17e85a69478
+	MLBROWSER_VERSION = 5641590312af70482eb95dec72016e670f195d74
 	MLBROWSER_SITE_METHOD = git
 	MLBROWSER_SITE = https://github.com/msieben/mlbrowser.git
 
@@ -49,8 +51,6 @@ You can add this package to your own fork of buildroot by adding the Config.in a
 				$(TARGET_MAKE_ENV) \
 				$(HOST_DIR)/usr/bin/qmake \
 					DEFINES+=_BROWSER_ \
-					DEFINES+=_MOUSE_ \
-					DEFINES+=_PROPERTYCHANGER_ \
 					./src/mlbrowser.pro \
 			); \
 		fi
