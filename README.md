@@ -3,9 +3,9 @@ mlbrowser
 
 This is the respository for the mlbrowser that has been developed by [Metrological](http://www.metrological.com). It can be used with the buildroot fork at https://github.com/albertd/buildroot-rpi or its fork https://github.com/msieben/buildroot-rpi.git.
 
-You can add this package to your own fork of buildroot by adding the Config.in and mlbrowser.mk files.
-
 The mlbrowser is a Qt port WebKit 1 based browser with support for the remote WebInspector.
+
+You can add the mlbrowser  package to your own fork of buildroot by adding the Config.in and mlbrowser.mk files.
 
 *Config.in*
 
@@ -23,7 +23,7 @@ The mlbrowser is a Qt port WebKit 1 based browser with support for the remote We
 	#
 	#############################################################
 
-	MLBROWSER_VERSION = 5641590312af70482eb95dec72016e670f195d74
+	MLBROWSER_VERSION = 597db4bb05119c52a3d6d0ac95f8a0bb7e58efc0
 	MLBROWSER_SITE_METHOD = git
 	MLBROWSER_SITE = https://github.com/msieben/mlbrowser.git
 
