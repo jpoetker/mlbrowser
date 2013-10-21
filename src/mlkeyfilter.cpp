@@ -84,6 +84,14 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 					return true;
 				}
 #endif
+				case Qt::Key_F3 : //
+				{
+					QApplication* pApp = (QApplication *)QApplication::instance();
+					Q_ASSERT(pApp != NULL);
+					//pApp->quit();
+					pApp->exit();
+					return true;
+				}
 
 				default:;
 			}

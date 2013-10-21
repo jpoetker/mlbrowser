@@ -36,6 +36,7 @@ private:
 public:
 	~MLWebKit();
 	static MLWebKit& instance();
+	void destroy();
 
 	void load(QUrl url);
 	void show();

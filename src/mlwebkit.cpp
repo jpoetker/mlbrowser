@@ -79,8 +79,12 @@ protected:
 
 MLWebKit& MLWebKit::instance()
 {
-	static MLWebKit mlwebkit;
-	return mlwebkit;
+	static MLWebKit*  mlwebkit;
+
+	Q_ASSERT(mlwebkit==NULL);
+
+	mlwebkit  = new MLWebKit();
+	return *mlwebkit;
 } 
 
 MLWebKit::MLWebKit() 
@@ -327,6 +331,12 @@ void MLWebKit::hide()
 	view.hide();
 }
 
+void MLWebKit::destroy()
+{
+	delete this;
+	//page.mainFrame()->evaluateJavaScript(QString("if(window && window.close) { window.close(); }"));
+}
+
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
 void MLWebKit::attach_object(QObject* pObject, const QString name)
 {
@@ -338,11 +348,10 @@ void MLWebKit::attach_object(QObject* pObject, const QString name)
 		return;
 	}
 
-	QWebFrame*  pFrame = page.mainFrame();
+	QWebFrame* pFrame = page.mainFrame();
 
 	if (pFrame != NULL )
 	{
-		qDebug () << "change (NULL) parent to pFrame";
 		pObject->setParent(pFrame);
 
 		qDebug () << "add webkit bridge for object " << pObject;
