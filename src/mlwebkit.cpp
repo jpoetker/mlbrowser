@@ -90,14 +90,12 @@ MLWebKit& MLWebKit::instance()
 
 MLWebKit::MLWebKit() 
 {
+	webview.setPage(&page);
 	view.setScene(&scene);
+	scene.addItem(&webview);
 
-//TODO : use proper cast
-	QApplication* pApp = (QApplication *)QApplication::instance();
-	Q_ASSERT(pApp != NULL);
-
-	QDesktopWidget* pDesktop = QApplication::desktop();
-	Q_ASSERT(pDesktop != NULL);
+	// Set the keyboard and mouse focus
+	webview.setFocus();
 
 #ifdef _SSLERROR_
 	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
@@ -109,12 +107,34 @@ MLWebKit::MLWebKit()
 //	pWidget = new QGLWidget(view);
 #endif
 
-	// Configuration, settings and alike
-//	scene.setItemIndexMethod( QGraphicsScene::NoIndex);
-//	view.setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-	view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-//	view.setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-//	view.setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+#ifdef QT_OPENGL_LIB
+//	view.setViewport(pWidget);
+
+//TODO : check buffer settings (platform)
+//TODO : check 'old' solution
+//TODO : control via command line arguments
+	view.setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
+#endif
+
+	initialize();
+	reset();
+
+	// Set visibility
+	webview.show();
+}
+
+bool MLWebKit::initialize(void) 
+{
+//TODO : use proper cast
+	QApplication* pApp = (QApplication *)QApplication::instance();
+	Q_ASSERT(pApp != NULL);
+
+	QDesktopWidget* pDesktop = QApplication::desktop();
+	Q_ASSERT(pDesktop != NULL);
+
+	// Some extra settings
+	pSettings = webview.settings();
+	Q_ASSERT(pSettings != NULL);
 
 	// Disable some 'browser features / elements'
 	view.setFrameShape(QFrame::NoFrame);
@@ -138,69 +158,156 @@ MLWebKit::MLWebKit()
 
 	pApp->setPalette(palette);
 
-	qDebug () << "geometry : " << pDesktop->screenGeometry().size();
-
 	// Proper (re)sizing, full screen
+	qDebug () << "geometry : " << pDesktop->screenGeometry().size();
 
 //TODO : implement check
 	webview.resize(QApplication::desktop()->screenGeometry().size());
-	webview.setPage(&page);
 
-	// Set the keyboard and mouse focus
-	webview.setFocus();
-
-	// Some extra settings
-	pSettings = webview.settings();
-
-	Q_ASSERT(pSettings != NULL);
-
-//TODO : enable via comamnd line arguments
-#ifdef _DEBUG_TOOLS_
-	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-#endif
-
-	pSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
-	pSettings->setAttribute(QWebSettings::WebGLEnabled, false);
+/*
 	pSettings->setAttribute(QWebSettings::PluginsEnabled, false);
-
-	pSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-	pSettings->setAttribute(QWebSettings::LocalStorageEnabled, true);
-
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
-//	pSettings->setAttribute(QWebSettings::FrameFlatteningEnabled, true);
+	pSettings->setAttribute(QWebSettings::FrameFlatteningEnabled, true);
+	pSettings->setAttribute(QWebSettings::SpatialNavigationEnabled, false);
+*/
+
 #ifdef _EXTENDED_QWEBSETTINGS_
 	// Requires qt5webkit-qwebsettings-websecurity.patch, a copy can be found at https://github.com/msieben/buildroot-rpi/blob/master/package/qt5/qt5webkit/release-patches/qt5webkit-qwebsettings-websecurity.patch
 	pSettings->setAttribute(QWebSettings::WebSecurityEnabled, false);
 #endif
-	pSettings->setAttribute(QWebSettings::SpatialNavigationEnabled, false);
 
 	// Overrule the cache settings
-/*
-	pSettings->setMaximumPagesInCache(0);
-	pSettings->setObjectCacheCapacities(0, 0, 0);
+
 	pSettings->QWebSettings::clearMemoryCaches();
-*/
 
-	// Finalize
-#ifdef QT_OPENGL_LIB
-//	view.setViewport(pWidget);
+	return true;
+}
 
-//TODO : check buffer settings (platform)
-//TODO : check 'old' solution
-//TODO : command line arguments
-	view.setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
-#endif
+bool MLWebKit::reset(void) 
+{
+	qWarning () << "Unset parameters default their values";
 
-	scene.addItem(&webview);
+	QStringList arguments = QCoreApplication::arguments();                                                                                 
+
+	QString value[3]={"", "", ""};
+	int index = -1;
+	bool ok = false;
+
+	index=arguments.indexOf("--screen-update-mode");
+	value[0]=QString("full-screen");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : screen-update-mode : " << value[0];
+
+	if ( value[0].compare("smart") )
+	{
+		view.setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+	}
+	else if ( value[0].compare("minimal") )
+	{
+		view.setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+	}
+	else if ( value[0].compare("bounding-rectangle") )
+	{
+		view.setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);                                                         
+	}
+	else /*if ( value[0].compare("full-screen") )*/
+	{
+		view.setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+	}
+
+	index=arguments.indexOf("--tiled-backing-store");
+	value[0]=QString("yes");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : tiled-backing-store : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::TiledBackingStoreEnabled,(value[0].compare("yes", Qt::CaseSensitive)==0));
+
+	index=arguments.indexOf("--accelerated-compositing");
+	value[0]=QString("yes");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : accelerated-compositing : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled,(value[0].compare("yes", Qt::CaseSensitive)==0));
+
+	index=arguments.indexOf("--webgl");
+	value[0]=QString("no");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : webgl : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::WebGLEnabled, (value[0].compare("yes", Qt::CaseSensitive)==0));
+
+	index=arguments.indexOf("--max-cached-pages");
+	value[0]=QString("0");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : max-cached-pages : " << value[0];
+	pSettings->setMaximumPagesInCache(value[0].toLong(&ok)); // 0 on error
+
+	index=arguments.indexOf("--object-cache");
+	value[0]=QString("0");
+	value[1]=QString("0");
+	value[2]=QString("0");
+	if (index > -1 && index < arguments.size()-3)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+		value[1]=arguments.at(index+2);
+		value[2]=arguments.at(index+3);
+	}
+	qDebug () << "Option : object-cache : " << value[0] << " " << value[1] << " " << value [2];
+	pSettings->setObjectCacheCapacities(value[0].toLong(&ok), value[1].toLong(&ok), value[2].toLong(&ok)); // 0 on error
+
+	index=arguments.indexOf("--offline-application-cache");
+	value[0]=QString("no");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : offline-application-cache : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, (value[0].compare("yes", Qt::CaseSensitive)==0));
+
+	index=arguments.indexOf("--local-storage");
+	value[0]=QString("no");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : local storage : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::LocalStorageEnabled, (value[0].compare("yes", Qt::CaseSensitive)==0));
 
 #ifdef _DEBUG_TOOLS_
-//TODO : print return value
-	page.setProperty("_q_webInspectorServerPort", INSPECTOR_PORT);
+	index=arguments.indexOf("--developer-options");
+	value[0]=QString("no");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : developer-options : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, (value[0].compare("yes", Qt::CaseSensitive)==0));
+
+//TODO : let it depend on the value of 'developer-options'
+	index=arguments.indexOf("--webinspector-port");
+	value[0]=QString("0");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : webinspector : " << value[0];
+	page.setProperty("_q_webInspectorServerPort", value[0]);
 #endif
 
-	// Set visibility
-	webview.show();
+	return true;
 }
 
 MLWebKit::~MLWebKit()
@@ -255,8 +362,9 @@ void MLWebKit::attach_object(QObject* pObject, const QString name)
 #ifdef _DEBUG_TOOLS_
 void MLWebKit::collect_garbage()
 {
-	QWebSettings::garbagecollectnow();
 // TODO: check if gc is available
+	// Requires qt5webki-add-js-garbage-collection-api.patch, a copy can be found at https://github.com/msieben/buildroot-rpi/blob/master/package/qt5/qt5webkit/release-patches/qt5webkit-add-js-garbage-collection-api.patch
+	QWebSettings::garbagecollectnow();
 }
 
 void MLWebKit::clear_caches()

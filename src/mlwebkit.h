@@ -32,11 +32,15 @@ private:
 	MLWebKit& operator=(const MLWebKit& mlwebkit);
 	~MLWebKit();
 
+	bool initialize(void);
+
 public:
 	static MLWebKit& instance();
 	void load(QUrl url);
 	void show();
 	void hide();
+
+	bool reset(void); // reset to provided command line value, basically, does what initialize() does
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
 	void attach_object(QObject* pObject, const QString _name_);
