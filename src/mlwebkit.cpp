@@ -169,7 +169,10 @@ MLWebKit::MLWebKit()
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessRemoteUrls, true);
 	pSettings->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
 //	pSettings->setAttribute(QWebSettings::FrameFlatteningEnabled, true);
+#ifdef _EXTENDED_QWEBSETTINGS_
+	// Requires qt5webkit-qwebsettings-websecurity.patch, a copy can be found at https://github.com/msieben/buildroot-rpi/blob/master/package/qt5/qt5webkit/release-patches/qt5webkit-qwebsettings-websecurity.patch
 	pSettings->setAttribute(QWebSettings::WebSecurityEnabled, false);
+#endif
 	pSettings->setAttribute(QWebSettings::SpatialNavigationEnabled, false);
 
 	// Overrule the cache settings
