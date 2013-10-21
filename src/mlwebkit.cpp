@@ -15,11 +15,6 @@
 #include "mlsslerror.h"
 #endif
 
-//TODO : move to command line argument 
-#ifdef _DEBUG_TOOLS_
-#define INSPECTOR_PORT 9999
-#endif
-
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
 #include <QWebFrame>
 #endif
@@ -371,17 +366,6 @@ void MLWebKit::clear_caches()
 {
 	QWebSettings::clearMemoryCaches();
 }
-
-void MLWebKit::toggle_inspector()
-{
-	qDebug () << "toggle web inspector";
-
-//TODO : print return value
-
-	if (page.property("_q_webInspectorServerPort") == INSPECTOR_PORT)
-		page.setProperty("_q_webInspectorServerPort", -1);
-	else
-		page.setProperty("_q_webInspectorServerPort", INSPECTOR_PORT);
 
 }
 #endif

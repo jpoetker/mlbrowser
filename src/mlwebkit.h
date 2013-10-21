@@ -48,7 +48,6 @@ public:
 #endif
 
 #ifdef _DEBUG_TOOLS_
-	Q_INVOKABLE void toggle_inspector();
 	Q_INVOKABLE void collect_garbage();
 	Q_INVOKABLE void clear_caches();
 #endif

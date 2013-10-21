@@ -61,17 +61,6 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 					return true;
 				}
 #ifdef _DEBUG_TOOLS_
-				case Qt::Key_Period : // '.' (period), 0x2e
-				{
-//TODO: move to the browser context menu event 
-
-					// toggle webinspector access
-					MLWebKit& webkit = MLWebKit::instance();
-					webkit.toggle_inspector();
-
-					return true;
-				}
-
 				case Qt::Key_VolumeMute : // 0x1000071
 				{	
 					QKeyEvent keyevent ( QEvent::KeyPress, Qt::Key_BracketRight, Qt::ControlModifier, "", pKeyEvent->isAutoRepeat(), 1 );
