@@ -366,6 +366,4 @@ void MLWebKit::clear_caches()
 {
 	QWebSettings::clearMemoryCaches();
 }
-
-}
 #endif
