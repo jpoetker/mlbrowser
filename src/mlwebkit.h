@@ -30,12 +30,13 @@ private:
 	MLWebKit();
 	MLWebKit(MLWebKit& mlwebkit);
 	MLWebKit& operator=(const MLWebKit& mlwebkit);
-	~MLWebKit();
 
 	bool initialize(void);
 
 public:
+	~MLWebKit();
 	static MLWebKit& instance();
+
 	void load(QUrl url);
 	void show();
 	void hide();
