@@ -8,6 +8,8 @@ Player::Player(QObject* object)
 
 	qDebug () << "create player";
 
+	setObjectName("player");
+
 	gst_init ( NULL, NULL );
 //	gst_init ( &argc, &argv );
 }

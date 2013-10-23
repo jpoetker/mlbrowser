@@ -90,6 +90,8 @@ MLWebKit& MLWebKit::instance()
 
 MLWebKit::MLWebKit() 
 {
+	setObjectName("browser");
+
 	webview.setPage(&page);
 	view.setScene(&scene);
 	scene.addItem(&webview);

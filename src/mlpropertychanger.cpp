@@ -8,6 +8,8 @@ PropertyChanger::PropertyChanger(QObject* pObject)
 {
 	Q_UNUSED(pObject);
 	qDebug () << "parent :" << this->parent();
+
+	setObjectName("propertychanger");
 }
 
 PropertyChanger::~PropertyChanger()
