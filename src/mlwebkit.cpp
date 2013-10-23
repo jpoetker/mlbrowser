@@ -79,11 +79,12 @@ protected:
 
 MLWebKit& MLWebKit::instance()
 {
-	static MLWebKit*  mlwebkit;
+	static MLWebKit*  mlwebkit=NULL;
 
-	Q_ASSERT(mlwebkit==NULL);
+	if (mlwebkit == NULL)
+		mlwebkit  = new MLWebKit();
+	Q_ASSERT(mlwebkit!=NULL);
 
-	mlwebkit  = new MLWebKit();
 	return *mlwebkit;
 } 
 
@@ -176,9 +177,9 @@ bool MLWebKit::initialize(void)
 	pSettings->setAttribute(QWebSettings::WebSecurityEnabled, false);
 #endif
 
-	// Overrule the cache settings
-
-	pSettings->QWebSettings::clearMemoryCaches();
+#ifdef _DEBUG_TOOLS_
+	clear_caches();
+#endif
 
 	return true;
 }
@@ -311,6 +312,9 @@ bool MLWebKit::reset(void)
 
 MLWebKit::~MLWebKit()
 {
+#ifdef _DEBUG_TOOLS_
+	clear_caches();
+#endif
 }
 
 void MLWebKit::load(QUrl url)
@@ -334,7 +338,6 @@ void MLWebKit::hide()
 void MLWebKit::destroy()
 {
 	delete this;
-	//page.mainFrame()->evaluateJavaScript(QString("if(window && window.close) { window.close(); }"));
 }
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
