@@ -179,6 +179,12 @@ bool MLWebKit::initialize(void)
 
 #ifdef _DEBUG_TOOLS_
 	clear_caches();
+
+	QWebFrame* pFrame = page.mainFrame();
+
+	Q_ASSERT(pFrame!=NULL);
+
+	connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
 #endif
 
 	return true;
@@ -341,7 +347,13 @@ void MLWebKit::destroy()
 }
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
-void MLWebKit::attach_object(QObject* pObject, const QString name)
+void MLWebKit::attach_objects(void)
+{
+	foreach(QObject* pObject, pList)
+		attach_object(pObject);
+}
+
+void MLWebKit::attach_object(QObject* pObject)
 {
 	qDebug () << "attach object to bridge";
 
@@ -358,8 +370,9 @@ void MLWebKit::attach_object(QObject* pObject, const QString name)
 		pObject->setParent(pFrame);
 
 		qDebug () << "add webkit bridge for object " << pObject;
-//TODO: connect to slot to keep the object accessible when page has changed
-		pFrame->addToJavaScriptWindowObject(name, pObject);
+		pFrame->addToJavaScriptWindowObject(pObject->objectName(), pObject);
+
+		pList.append(pObject);
 	}
 	else
 		qWarning () << "unable to add webkit bridge for object " << pObject;	

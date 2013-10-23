@@ -45,12 +45,15 @@ public:
 	bool reset(void); // reset to provided command line value, basically, does what initialize() does
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
-	void attach_object(QObject* pObject, const QString _name_);
+	void attach_object(QObject* pObject);
 #endif
 
 #ifdef _DEBUG_TOOLS_
 	Q_INVOKABLE void collect_garbage();
 	Q_INVOKABLE void clear_caches();
+
+public slots:
+	void attach_objects(void);
 #endif
 
 private:
@@ -62,6 +65,11 @@ private:
 #ifdef QT_OPENGL_LIB
 	QGLWidget*		pWidget; // viewport
 //	QGLWidget		widget; // viewport
+#endif
+
+#ifdef _DEBUG_TOOLS_
+	//QList<QObject*>	
+	QObjectList		pList;	
 #endif
 
 	QWebSettings*		pSettings;

@@ -91,10 +91,12 @@ int main(int argc, char * argv[])
 
 #ifdef _PLAYER_
         Player player(NULL);
+	player.setObjectName("player");
 #endif
 
 #ifdef _PROPERTYCHANGER_
 	PropertyChanger propertychanger(NULL);
+	propertychnager.setObjectName("propertychanger");
 #endif
 
 //REMARK: order of filters is important; last installed -> receives first
@@ -126,20 +128,21 @@ int main(int argc, char * argv[])
 #endif
 
         MLWebKit& browser=MLWebKit::instance();
+	browser.setObjectName("browser");
 
 #ifdef _PLAYER_
         qDebug () << "add player";
-	browser.attach_object(&player, "player");
+	browser.attach_object(&player);
 #endif
 
 #ifdef _PROPERTYCHANGER_
 	qDebug () << "add propertychanger"; 
-	browser.attach_object(&propertychanger, "propertychanger");
+	browser.attach_object(&propertychanger);
 #endif
 
 #ifdef _DEBUG_TOOLS_
 	qDebug () << "add browser"; 
-	browser.attach_object(&browser, "browser");
+	browser.attach_object(&browser);
 #endif
 
 	qDebug () << "load and show page";
