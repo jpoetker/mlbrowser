@@ -34,7 +34,6 @@ contains(DEFINES, _PROPERTYCHANGER_) {
 	SOURCES += mlpropertychanger.cpp
 }
 
-
 contains(DEFINES, _PLAYER_) {
 	HEADERS += mlplayer.h
 	SOURCES += mlplayer.cpp
