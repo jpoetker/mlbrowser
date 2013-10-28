@@ -90,7 +90,9 @@ MLWebKit& MLWebKit::instance()
 
 MLWebKit::MLWebKit() 
 {
+#ifdef _DEBUG_TOOLS_
 	setObjectName("browser");
+#endif
 
 	webview.setPage(&page);
 	view.setScene(&scene);
