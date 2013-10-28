@@ -100,6 +100,7 @@ MLWebKit::MLWebKit()
 	webview.setFocus();
 
 #ifdef _SSLERROR_
+//TODO : unload connected objects to avoid multiple signal emissions
 	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
 #endif
 
@@ -186,6 +187,7 @@ bool MLWebKit::initialize(void)
 
 	Q_ASSERT(pFrame!=NULL);
 
+//TODO : unload connected objects to avoid multiple signal emissions
 	connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
 #endif
 
@@ -362,6 +364,8 @@ void MLWebKit::destroy()
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
 void MLWebKit::attach_objects(void)
 {
+//TODO : unload connected objects to avoid multiple 
+
 	QWebFrame* pFrame = page.mainFrame();
 
 	if (pFrame != NULL )
@@ -375,6 +379,7 @@ void MLWebKit::attach_objects(void)
 void MLWebKit::attach_object(QObject* pObject)
 {
 //TODO : check if object has not already been added
+//TODO : ensure lifetime of objects
 
 	if(pObject == NULL)
 	{
