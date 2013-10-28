@@ -362,13 +362,19 @@ void MLWebKit::destroy()
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
 void MLWebKit::attach_objects(void)
 {
-	foreach(QObject* pObject, pList)
-		attach_object(pObject);
+	QWebFrame* pFrame = page.mainFrame();
+
+	if (pFrame != NULL )
+		foreach(QObject* pObject, pList)
+		{
+			qDebug () << "create/connect webkit bridge for object " << pObject;
+			pFrame->addToJavaScriptWindowObject(pObject->objectName(), pObject);
+		}
 }
 
 void MLWebKit::attach_object(QObject* pObject)
 {
-	qDebug () << "attach object to bridge";
+//TODO : check if object has not already been added
 
 	if(pObject == NULL)
 	{
@@ -381,14 +387,10 @@ void MLWebKit::attach_object(QObject* pObject)
 	if (pFrame != NULL )
 	{
 		pObject->setParent(pFrame);
-
-		qDebug () << "add webkit bridge for object " << pObject;
-		pFrame->addToJavaScriptWindowObject(pObject->objectName(), pObject);
-
 		pList.append(pObject);
 	}
 	else
-		qWarning () << "unable to add webkit bridge for object " << pObject;	
+		qWarning () << "unable to add object to webkit bridge" << pObject;	
 }
 #endif
 
