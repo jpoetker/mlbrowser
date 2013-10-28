@@ -181,13 +181,16 @@ bool MLWebKit::initialize(void)
 	QWebFrame* pFrame = page.mainFrame();
 	Q_ASSERT(pFrame!=NULL);
 
-//TODO : unload connected objects to avoid multiple signal emissions
-	connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+//TODO : check return values
+	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+	QObject::connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
 #endif
 
 #ifdef _SSLERROR_
-//TODO : unload connected objects to avoid multiple signal emissions
-	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
+//TODO : check networkAccessManager is valid
+//TODO : check return value
+	QObject::disconnect(page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
+	QObject::connect(page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
 #endif
 
 	return true;
@@ -331,7 +334,15 @@ bool MLWebKit::reset(void)
 }
 
 MLWebKit::~MLWebKit()
-{
+{	
+	QWebFrame* pFrame = page.mainFrame();
+	Q_ASSERT(pFrame!=NULL);
+
+	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+#ifdef _SSLERROR_
+	QObject::disconnect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
+#endif
+
 #ifdef _DEBUG_TOOLS_
 	clear_caches();
 #endif
