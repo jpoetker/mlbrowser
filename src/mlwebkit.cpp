@@ -101,11 +101,6 @@ MLWebKit::MLWebKit()
 	// Set the keyboard and mouse focus
 	webview.setFocus();
 
-#ifdef _SSLERROR_
-//TODO : unload connected objects to avoid multiple signal emissions
-	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
-#endif
-
 #ifdef QT_OPENGL_LIB
 	pWidget = NULL;
 //	pWidget = new QGLWidget();
@@ -191,6 +186,11 @@ bool MLWebKit::initialize(void)
 
 //TODO : unload connected objects to avoid multiple signal emissions
 	connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+#endif
+
+#ifdef _SSLERROR_
+//TODO : unload connected objects to avoid multiple signal emissions
+	QObject::connect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
 #endif
 
 	return true;
