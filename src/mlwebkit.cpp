@@ -105,14 +105,12 @@ MLWebKit::MLWebKit()
 	pWidget = NULL;
 //	pWidget = new QGLWidget();
 //	pWidget = new QGLWidget(view);
-#endif
-
-#ifdef QT_OPENGL_LIB
-//	view.setViewport(pWidget);
 
 //TODO : check buffer settings (platform)
 //TODO : check 'old' solution
 //TODO : control via command line arguments
+
+//	view.setViewport(pWidget);
 	view.setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
 #endif
 
@@ -181,7 +179,6 @@ bool MLWebKit::initialize(void)
 	clear_caches();
 
 	QWebFrame* pFrame = page.mainFrame();
-
 	Q_ASSERT(pFrame!=NULL);
 
 //TODO : unload connected objects to avoid multiple signal emissions
