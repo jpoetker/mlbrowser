@@ -45,7 +45,7 @@ public:
 	bool reset(void); // reset to provided command line value, basically, does what initialize() does
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
-	void attach_object(QObject* pObject);
+	void attach_object(QObject& pObject);
 #endif
 
 #ifdef _DEBUG_TOOLS_

@@ -376,26 +376,19 @@ void MLWebKit::attach_objects(void)
 		}
 }
 
-void MLWebKit::attach_object(QObject* pObject)
+void MLWebKit::attach_object(QObject& pObject)
 {
 //TODO : check if object has not already been added
-//TODO : ensure lifetime of objects
-
-	if(pObject == NULL)
-	{
-		qWarning () << "invalid object provided for webkit bridge";	
-		return;
-	}
 
 	QWebFrame* pFrame = page.mainFrame();
 
 	if (pFrame != NULL )
 	{
-		pObject->setParent(pFrame);
-		pList.append(pObject);
+		pObject.setParent(pFrame);
+		pList.append(&pObject);
 	}
 	else
-		qWarning () << "unable to add object to webkit bridge" << pObject;	
+		qWarning () << "unable to add object to webkit bridge" << &pObject;	
 }
 #endif
 
