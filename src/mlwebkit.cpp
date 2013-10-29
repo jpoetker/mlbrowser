@@ -123,8 +123,7 @@ MLWebKit::MLWebKit()
 
 bool MLWebKit::initialize(void) 
 {
-//TODO : use proper cast
-	QApplication* pApp = (QApplication *)QApplication::instance();
+	QApplication* pApp = dynamic_cast<QApplication*>(QApplication::instance());
 	Q_ASSERT(pApp != NULL);
 
 	QDesktopWidget* pDesktop = QApplication::desktop();
