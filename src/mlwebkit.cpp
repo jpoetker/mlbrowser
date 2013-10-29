@@ -308,26 +308,28 @@ bool MLWebKit::reset(void)
 	qDebug () << "Option : developer-options : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
 	pSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, (value[0].compare("yes", Qt::CaseSensitive)==0));
 
-//TODO : let it depend on the value of 'developer-options'
-	index=arguments.indexOf("--webinspector-port");
-	value[0]=QString("0");
-	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	if (pSettings->testAttribute(QWebSettings::DeveloperExtrasEnabled) == true)
 	{
-		value[0]=arguments.at(index+1);
-	}
-	qDebug () << "Option : webinspector : " << value[0];
-	page.setProperty("_q_webInspectorServerPort", value[0]);
+		index=arguments.indexOf("--webinspector-port");
+		value[0]=QString("0");
+		if (index > -1 && index < arguments.size()-1)                                                                                                              
+		{
+			value[0]=arguments.at(index+1);
+		}
+		qDebug () << "Option : webinspector : " << value[0];
+		page.setProperty("_q_webInspectorServerPort", value[0]);
 
-	// Requires qt5webkit-add-compositing-visuals-to-qwebsettings.patch, a copy can be found at https://github.com/msieben/patches/blob/master/qtwebkit/untested/qt5webkit-add-compositing-visuals-to-qwebsettings.patch
-	index=arguments.indexOf("--compositing-visuals");
-	value[0]=QString("no");
-	if (index > -1 && index < arguments.size()-1)                                                                                                              
-	{
-		value[0]=arguments.at(index+1);
+		// Requires qt5webkit-add-compositing-visuals-to-qwebsettings.patch, a copy can be found at https://github.com/msieben/patches/blob/master/qtwebkit/untested/qt5webkit-add-compositing-visuals-to-qwebsettings.patch
+		index=arguments.indexOf("--compositing-visuals");
+		value[0]=QString("no");
+		if (index > -1 && index < arguments.size()-1)                                                                                                              
+		{
+			value[0]=arguments.at(index+1);
+		}
+		qDebug () << "Option : compositng-visuals : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
+		pSettings->setAttribute(QWebSettings::RepaintCounter, (value[0].compare("yes", Qt::CaseSensitive)==0));
+		pSettings->setAttribute(QWebSettings::DebugBorder, (value[0].compare("yes", Qt::CaseSensitive)==0));
 	}
-	qDebug () << "Option : compositng-visuals : " << (value[0].compare("yes", Qt::CaseSensitive)==0);
-	pSettings->setAttribute(QWebSettings::RepaintCounter, (value[0].compare("yes", Qt::CaseSensitive)==0));
-	pSettings->setAttribute(QWebSettings::DebugBorder, (value[0].compare("yes", Qt::CaseSensitive)==0));
 #endif
 
 	return true;
