@@ -197,7 +197,7 @@ bool MLWebKit::initialize(void)
 
 bool MLWebKit::reset(void) 
 {
-	qWarning () << "Unset parameters default their values";
+	qWarning () << "Unset parameters default to their values";
 
 	QStringList arguments = QCoreApplication::arguments();                                                                                 
 
