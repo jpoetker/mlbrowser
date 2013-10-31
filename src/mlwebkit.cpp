@@ -331,6 +331,15 @@ bool MLWebKit::reset(void)
 	}
 #endif
 
+	index=arguments.indexOf("--url");
+	value[0]=QString("http://www.google.com");
+	if (index > -1 && index < arguments.size()-1)                                                                                                              
+	{
+		value[0]=arguments.at(index+1);
+	}
+	qDebug () << "Option : url : " << value[0];
+	webview.setUrl(value[0]);
+	
 	return true;
 }
 
@@ -347,6 +356,11 @@ MLWebKit::~MLWebKit()
 #ifdef _DEBUG_TOOLS_
 	clear_caches();
 #endif
+}
+
+void MLWebKit::load()
+{
+	load(webview.url());
 }
 
 void MLWebKit::load(QUrl url)

@@ -115,12 +115,6 @@ int main(int argc, char * argv[])
 #endif
 
 #ifdef _BROWSER_
-	QUrl url;
-
-        if (argc > 1)
-                url = QUrl(argv[1]);
-        else
-                url = QUrl("");
 
 #ifndef _MOUSE_
         qDebug () << "hide mouse pointer";
@@ -147,7 +141,7 @@ int main(int argc, char * argv[])
 
 	qDebug () << "load and show page";
 
-        browser.load(url);
+        browser.load();
         browser.show();
 #endif
 
