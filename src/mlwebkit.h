@@ -69,8 +69,7 @@ private:
 #endif
 
 #ifdef _DEBUG_TOOLS_
-	//QList<QObject*>	
-	QObjectList		pList;	
+	QObjectList		list; // list of QObject*	
 #endif
 
 	QWebSettings*		pSettings;

@@ -394,7 +394,7 @@ void MLWebKit::attach_objects(void)
 	QWebFrame* pFrame = page.mainFrame();
 
 	if (pFrame != NULL )
-		foreach(QObject* pObject, pList)
+		foreach(QObject* pObject, list)
 		{
 			qDebug () << "create/connect webkit bridge for object " << pObject;
 			pFrame->addToJavaScriptWindowObject(pObject->objectName(), pObject);
@@ -410,7 +410,7 @@ void MLWebKit::attach_object(QObject& pObject)
 	if (pFrame != NULL )
 	{
 		pObject.setParent(pFrame);
-		pList.append(&pObject);
+		list.append(&pObject);
 	}
 	else
 		qWarning () << "unable to add object to webkit bridge" << &pObject;	
