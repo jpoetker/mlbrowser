@@ -72,7 +72,7 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 				{
 					// Call the garbage collector
 					MLWebKit& webkit = MLWebKit::instance();
-					webkit.collect_garbage();
+					webkit.collectGarbage();
 					return true;
 				}
 
@@ -80,7 +80,7 @@ bool KeyFilter::eventFilter(QObject* pObject, QEvent* pEvent)
 				{
 					// Clear memory caches
 					MLWebKit& webkit = MLWebKit::instance();
-					webkit.clear_caches();
+					webkit.clearCaches();
 					return true;
 				}
 #endif

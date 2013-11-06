@@ -126,17 +126,17 @@ int main(int argc, char * argv[])
 
 #ifdef _PLAYER_
         qDebug () << "add player";
-	browser.attach_object(player);
+	browser.attachObject(player);
 #endif
 
 #ifdef _PROPERTYCHANGER_
 	qDebug () << "add propertychanger"; 
-	browser.attach_object(propertychanger);
+	browser.attachObject(propertychanger);
 #endif
 
 #ifdef _DEBUG_TOOLS_
 	qDebug () << "add browser"; 
-	browser.attach_object(browser);
+	browser.attachObject(browser);
 #endif
 
 	qDebug () << "load and show page";

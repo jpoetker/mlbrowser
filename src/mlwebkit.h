@@ -46,15 +46,15 @@ public:
 	bool reset(void); // reset to provided command line value, basically, does what initialize() does
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
-	void attach_object(QObject& pObject);
+	void attachObject(QObject& pObject);
 #endif
 
 #ifdef _DEBUG_TOOLS_
-	Q_INVOKABLE void collect_garbage();
-	Q_INVOKABLE void clear_caches();
+	Q_INVOKABLE void collectGarbage();
+	Q_INVOKABLE void clearCaches();
 
 public slots:
-	void attach_objects(void);
+	void attachObjects(void);
 #endif
 
 private:

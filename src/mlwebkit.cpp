@@ -175,14 +175,14 @@ bool MLWebKit::initialize(void)
 #endif
 
 #ifdef _DEBUG_TOOLS_
-	clear_caches();
+	clearCaches();
 
 	QWebFrame* pFrame = page.mainFrame();
 	Q_ASSERT(pFrame!=NULL);
 
 //TODO : check return values
-	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
-	QObject::connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attachObjects()));
+	QObject::connect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attachObjects()));
 #endif
 
 #ifdef _SSLERROR_
@@ -348,13 +348,13 @@ MLWebKit::~MLWebKit()
 	QWebFrame* pFrame = page.mainFrame();
 	Q_ASSERT(pFrame!=NULL);
 
-	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attach_objects()));
+	QObject::disconnect(pFrame,SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(attachObjects()));
 #ifdef _SSLERROR_
 	QObject::disconnect (page.networkAccessManager(), &QNetworkAccessManager::sslErrors, sslerror, &SSLError::handleSslErrors);
 #endif
 
 #ifdef _DEBUG_TOOLS_
-	clear_caches();
+	clearCaches();
 #endif
 }
 
@@ -387,7 +387,7 @@ void MLWebKit::destroy()
 }
 
 #if defined (_PLAYER_) || defined (_PROPERTYCHANGER_) || defined (_DEBUG_TOOLS_)
-void MLWebKit::attach_objects(void)
+void MLWebKit::attachObjects(void)
 {
 //TODO : unload connected objects to avoid multiple 
 
@@ -401,7 +401,7 @@ void MLWebKit::attach_objects(void)
 		}
 }
 
-void MLWebKit::attach_object(QObject& pObject)
+void MLWebKit::attachObject(QObject& pObject)
 {
 //TODO : check if object has not already been added
 
@@ -418,14 +418,14 @@ void MLWebKit::attach_object(QObject& pObject)
 #endif
 
 #ifdef _DEBUG_TOOLS_
-void MLWebKit::collect_garbage()
+void MLWebKit::collectGarbage()
 {
 // TODO: check if gc is available
 	// Requires qt5webki-add-js-garbage-collection-api.patch, a copy can be found at https://github.com/msieben/buildroot-rpi/blob/master/package/qt5/qt5webkit/release-patches/qt5webkit-add-js-garbage-collection-api.patch
-	QWebSettings::garbagecollectnow();
+	QWebSettings::garbageCollectNow();
 }
 
-void MLWebKit::clear_caches()
+void MLWebKit::clearCaches()
 {
 	QWebSettings::clearMemoryCaches();
 }
