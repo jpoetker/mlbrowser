@@ -2,6 +2,7 @@
 #define _BUILD_DATE_ __DATE__
 
 #include <QApplication>
+#include <QSettings>
 #include <QtGui>
 
 #ifdef _KEYFILTER_
@@ -82,6 +83,11 @@ lightgray - 37
 int main(int argc, char * argv[])
 {
 	QApplication app(argc, argv);
+
+	QCoreApplication::setOrganizationName("Metrological");
+	QCoreApplication::setOrganizationDomain("metrological.com");
+	QCoreApplication::setApplicationName("ML Browser"); 
+	QSettings settings(QApplication::applicationDirPath() + "/mlbrowser.ini", QSettings::IniFormat);
 
 #ifdef _VERBOSE_
 	qInstallMessageHandler ( MessageHandler );
