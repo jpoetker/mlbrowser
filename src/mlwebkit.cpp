@@ -102,16 +102,12 @@ MLWebKit::MLWebKit()
 	webview.setFocus();
 
 #ifdef QT_OPENGL_LIB
-	pWidget = NULL;
-//	pWidget = new QGLWidget();
-//	pWidget = new QGLWidget(view);
+	pWidget = new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer);
 
 //TODO : check buffer settings (platform)
-//TODO : check 'old' solution
 //TODO : control via command line arguments
 
-//	view.setViewport(pWidget);
-	view.setViewport(new QGLWidget(QGL::DirectRendering | QGL::DoubleBuffer));
+	view.setViewport(pWidget);
 #endif
 
 	initialize();
@@ -356,6 +352,9 @@ MLWebKit::~MLWebKit()
 #ifdef _DEBUG_TOOLS_
 	clearCaches();
 #endif
+
+	if (pWidget != NULL)
+		delete pWidget;
 }
 
 void MLWebKit::load()
