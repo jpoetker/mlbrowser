@@ -7,6 +7,7 @@ contains(QT_MAJOR_VERSION, 5) {
 
 contains(QT_MAJOR_VERSION, 4) {
 	QT += \
+		opengl \
 		webkit \
 		network
 }
