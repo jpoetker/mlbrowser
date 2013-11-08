@@ -34,7 +34,7 @@ private:
 	bool initialize(void);
 
 public:
-	~MLWebKit();
+	virtual ~MLWebKit();
 	static MLWebKit& instance();
 	void destroy();
 

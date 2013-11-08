@@ -339,7 +339,7 @@ bool MLWebKit::reset(void)
 	return true;
 }
 
-MLWebKit::~MLWebKit()
+/*virtual*/MLWebKit::~MLWebKit()
 {	
 	QWebFrame* pFrame = page.mainFrame();
 	Q_ASSERT(pFrame!=NULL);
