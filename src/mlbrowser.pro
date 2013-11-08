@@ -49,3 +49,8 @@ contains(DEFINES, _SSLERROR_) {
 	HEADERS += mlsslerror.h
 	SOURCES += mlsslerror.cpp
 }
+
+contains(DEFINES, _MLAPPLICATION_TEST_) {
+	HEADERS += mlapplication.h
+	SOURCES += mlapplication.cpp
+}

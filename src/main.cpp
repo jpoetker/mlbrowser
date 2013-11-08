@@ -1,7 +1,12 @@
 #define _BUILD_TIME_ __TIME__
 #define _BUILD_DATE_ __DATE__
 
+#ifdef _MLAPPLICATION_TEST_
+#include "mlapplication.h"
+#else
 #include <QApplication>
+#endif
+
 #include <QSettings>
 #include <QtGui>
 
@@ -82,12 +87,16 @@ lightgray - 37
 
 int main(int argc, char * argv[])
 {
+#ifdef _MLAPPLICATION_TEST_
+	MLApplication app(argc, argv);
+#else
 	QApplication app(argc, argv);
 
 	QCoreApplication::setOrganizationName("Metrological");
 	QCoreApplication::setOrganizationDomain("metrological.com");
 	QCoreApplication::setApplicationName("ML Browser"); 
 	QSettings settings(QApplication::applicationDirPath() + "/mlbrowser.ini", QSettings::IniFormat);
+#endif
 
 #ifdef _VERBOSE_
 	qInstallMessageHandler ( MessageHandler );
